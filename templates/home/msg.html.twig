@@ -1,0 +1,20 @@
+<h1> sbeh lkhir  {{n | length}} </h1>
+{% set x=1 %}
+{{x}}
+
+        {% for t in a %}
+        {%if t.nb_books >  0%}
+
+      {# {{t.id}}#}
+    
+       <td>{{t.username|upper}}</td>
+       
+
+       <img src={{t.picture}}>
+       <a href="{{ path('d',{'username' : t.username})}}" title="Mon autre page">Details</a>
+       <button> BUY</button>
+
+       {%endif%}
+        {% endfor %}
+ {{dump(a)}}
+ {{a[0].username}}

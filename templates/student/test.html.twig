@@ -1,0 +1,31 @@
+   
+   
+
+<table style=" margin:30px auto; border-collapse:collapse;">
+  
+    <tr>
+     <h1>Liste des étudiants</h1>
+      <th style="border: 1px solid #000;">ID</th>
+      <th style="border: 1px solid #000;">Nom</th>
+      <th style="border: 1px solid #000;">Email</th>
+      <th style="border: 1px solid #000;">Âge</th>
+      <th style="border: 1px solid #000;">Action</th>
+    </tr>
+  
+
+    {% for student in response %}
+      <tr>
+        <th style="border: 1px solid #000;">{{ student.id }}</th>
+        <th style="border: 1px solid #000;">{{ student.name }}</th>
+        <th style="border: 1px solid #000;">{{ student.email }}</th>
+        <th style="border: 1px solid #000;">{{ student.age }}</th>
+        <th style="border: 1px solid #000;">
+          <a href="/update/{{ student.id }}" class="modifier">Modifier</a>
+          <a href="/remove1/{{ student.id }}" class="delete">Supprimer</a>
+        </th>
+      </tr>
+
+    {% endfor %}
+  
+</table>
+<a href="/addF" class="add" >Ajouter </a>
