@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Student;
 use App\Form\StudentType;
 use App\Entity\Classroom;
@@ -27,6 +28,16 @@ class StudentController extends AbstractController
         $result=$repo->findAll();
         return $this->render('student/test.html.twig', [
             'response' => $result,
+        ]);
+    }
+    #[Route('/fetch2', name: 'fetch2')]
+    public function fetch2(ManagerRegistry $mr): Response
+    {
+        $repo=$mr->getRepository(Student::class);
+        $result1=$repo->findAll();
+
+        return $this->render('student/test.html.twig', [
+            'response1' => $result1,
         ]);
     }
     #[Route('/add', name: 'add')]
@@ -105,5 +116,79 @@ class StudentController extends AbstractController
         
         return $this->render('student/add.html.twig',['f'=>$form->createView()]);
     }
+    #[Route('/dql', name: 'dql')]
+public function dqlStudent(EntityManagerInterface $em , Request $request , StudentRepository $repo):Response
+{
+    $result=$repo->findAll();
+    $req=$em->createQuery("select s from App\Entity\Student s where s.name = :n ");
+    if($request->isMethod('post')){
+        $value=$request->get('test');
+        $req->setParameter('n' , $value);
+        $result=$req->getResult();
+    }
+    return $this->render('student/searchStudent.html.twig',[
+    'student' => $result]);
+}
+#[Route('/dql1', name: 'dql1')]
+public function dqlStudent1(EntityManagerInterface $em , Request $request , StudentRepository $repo):Response
+{
+    $result=$repo->findAll();
+    //$req=$em->createQuery("select s from App\Entity\Student s where s.name = :n ");
+    if($request->isMethod('post')){
+        $value=$request->get('test');
+        
+        $result=$repo->fetchStudentByName($value);
+        //dd($result);
+    }
+    return $this->render('student/searchStudent1.html.twig',[
+    'student' => $result]);
+}
+#[Route('/dql2', name: 'dql2')]
+public function dql2(EntityManagerInterface $em):Response
+{
+    $req=$em->createQuery("select count(s) from App\Entity\Student s");//elle compte le nombre d'etudiants 
+    $result=$req->getResult();
+    dd($result);
+}
+#[Route('/dql3', name: 'dql3')]
+public function dql3(EntityManagerInterface $em):Response
+{
+    $req=$em->createQuery("select s.name from App\Entity\Student s Order By s.name DESC");//tri
+    $result=$req->getResult();
+    dd($result);
+}
+#[Route('/dql4', name: 'dql4')]
+public function dql4(EntityManagerInterface $em):Response
+{
+    $req=$em->createQuery("select s.name from App\Entity\Student s where s.classroom !='null' ");
+    $result=$req->getResult();
+    dd($result);
+}
 
+#[Route('/dql5', name: 'dql5')]
+public function dql5(EntityManagerInterface $em):Response
+{
+    $req=$em->createQuery("select s.name t ,c.name from App\Entity\Student s join s.classroom c");
+    $result=$req->getResult();
+    dd($result);
+}
+#[Route('/dql6', name: 'dql6')]
+public function dql6(EntityManagerInterface $em):Response
+{
+    $req=$em->createQuery("select s.name t , c.name from App\Entity\Student s join s.classroom c where c.name='3a40'");
+    $result=$req->getResult();
+    dd($result);
+}
+#[Route('/QB', name: 'QB')]
+public function QB(StudentRepository $repo):Response
+{
+    $result=$repo->listQB();
+    dd($result);   
+}
+#[Route('/QB1', name: 'QB1')]
+public function QB1(StudentRepository $repo):Response
+{
+    $result=$repo->listQB1();
+    dd($result);   
+}
 }
